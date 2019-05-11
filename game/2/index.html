@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop - lesson 10: finishing up</title>
+    <style> *{ padding: 0; margin: 0; } canvas { background: #00008b; display: block; margin: 0 auto; }</style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="480" height="580"></canvas>
+<input type="button" value="AUTO" style=" position: absolute; left: 47.5%; top:600px;">
+
+<script type="text/javascript">
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    var canvas_width=canvas.width;
+    var canvas_height=canvas.height-10;
+    
+    var ballRadius = 5;
+    var ball_speed = 5;
+    
+    var paddleHeight = 10;
+    var paddleWidth = 75;
+    var paddleX = (canvas_width-paddleWidth)/2;
+    var paddleY = canvas_height - paddleHeight;
+    var x = canvas_width/2;
+    var y = canvas_height-paddleHeight-ballRadius;
+    var dx = ball_speed;
+    var dy = -ball_speed;
+    var rightPressed = false;
+    var leftPressed = false;
+    var brickRowCount = 15;
+    var brickColumnCount = 6;
+    var brickWidth = 30;
+    var brickHeight = 15;
+    var brickPadding = 1;
+    var brickOffsetTop = 40;
+    var brickOffsetLeft = 8;
+    var score = 0;
+    var lives = 3;
+    var angle;
+    
+    var stay = true;
+    var stayPosY = y;
+    
+    //Item
+    var itemPool = [];
+    var itemTable = [
+        "[L]",
+        "[M]",
+        "[S]",
+        "(F)",
+        "(M)",
+        "(S)",
+        "(P)",
+        "1up"
+    ];
+    const drop_speed = 1;
+    const item_size = 0.5*brickWidth;
+    
+    var power = false;
+    var power_counter = 0;
+    
+    var auto = true;
+    var autoBtn = document.getElementsByTagName('input')[0];
+    
+    autoBtn.addEventListener("click", function(){
+    auto = !auto;
+    if(auto)
+        autoBtn.value = 'AUTO';
+    else
+        autoBtn.value = 'OPER';
+    }, false);
+    
+    var bricks = [];
+    for(c=0; c<brickColumnCount; c++) {
+        bricks[c] = [];
+        for(r=0; r<brickRowCount; r++) {
+            bricks[c][r] = { x: 0, y: 0, status: 1 };
+        }
+    }
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+    document.addEventListener("mousemove", mouseMoveHandler, false);
+    document.addEventListener("mousedown", function(){if(stay==true)stay = false;}, false);
+
+    function initStatus(){
+        itemPool = [];
+        paddleWidth = 75;
+        ball_speed = 5;
+        power = false;
+    }
+    
+    function createItem(regenX, regenY){
+        var rand = Math.floor(Math.random() * 8); //0~7
+        var _name = itemTable[rand];
+        itemPool.push({name: _name, x: regenX, y: regenY, stat: 1});
+    }
+    
+    function dropItems(){
+        for(i=0; i<itemPool.length; i++) {
+            itemPool[i].y += drop_speed;
+            if(itemPool[i].stat == 1){
+                if(
+                    itemPool[i].x+item_size/2 > paddleX //바 왼쪽
+                    && itemPool[i].x+item_size/2 < paddleX+paddleWidth //바 오른쪽
+                    && itemPool[i].y+item_size/2 > canvas_height-paddleHeight //바 위쪽
+                    && itemPool[i].y+item_size/2 > canvas_height //바 밑바닥
+                ){
+                    itemAbility(itemPool[i].name);
+                    itemPool[i].stat = 0;
+                }
+                if(itemPool[i].y >= 580)
+                    itemPool[i].stat = 0;
+            }
+        }
+        for(i=0; i<itemPool.length; i++) {
+            if(itemPool[i].stat == 0)
+                itemPool.slice(i,1);
+        }
+        drawItems();
+    }
+    
+    function itemAbility(name){
+        switch(name){
+            case "[L]": // long
+                paddleWidth = 100;
+            break;
+            case "[M]": // Medium
+                paddleWidth = 75;
+            break;
+            case "[S]": // short
+                paddleWidth = 50;
+            break;
+            case "(F)": // fast
+                ball_speed = 7.5;
+            break;
+            case "(M)": // medium pace
+                ball_speed = 5;
+            break;
+            case "(S)": // slow
+                ball_speed = 2.5;
+            break;
+            case "(P)": // power
+                power = true;
+            break;
+            case "1up": // 1up
+                lives += 1;
+            break;
+            
+        }
+    }
+    
+    function drawItems(){
+        for(i=0; i<itemPool.length; i++) {
+            if(itemPool[i].stat == 1){
+                ctx.font = "16px Arial";
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fillText(itemPool[i].name, itemPool[i].x, itemPool[i].y);
+            }
+        }
+    }
+    
+    function keyDownHandler(e) {
+        if(e.keyCode == 39) {
+            rightPressed = true;
+        }
+        else if(e.keyCode == 37) {
+            leftPressed = true;
+        }
+    }
+    function keyUpHandler(e) {
+        if(e.keyCode == 39) {
+            rightPressed = false;
+        }
+        else if(e.keyCode == 37) {
+            leftPressed = false;
+        }
+    }
+    function mouseMoveHandler(e) {
+        if(auto)
+            return;
+        var relativeX = e.clientX - canvas.offsetLeft;
+        if(relativeX > 0 && relativeX < canvas_width) {
+            paddleX = relativeX - paddleWidth/2;
+        }
+    }
+    function collisionDetection() {
+        for(c=0; c<brickColumnCount; c++) {
+            for(r=0; r<brickRowCount; r++) {
+                var b = bricks[c][r];
+                if(b.status == 1) {
+                    if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                        if(!power)
+                            dy = -dy;
+                        b.status = 0;
+                        if(Math.random()*6 > 4) //아이템 약 1/5 확률로 생성
+                            createItem(b.x+brickWidth/5, b.y+brickHeight);
+                        score++;
+                        if(score == brickRowCount*brickColumnCount) {
+                            alert("YOU WIN, CONGRATS!\n\nscore : "+score);
+                            document.location.reload();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function drawBall() {
+        ctx.beginPath();
+        ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+        ctx.fillStyle = "#FFFFFF"//"#0095DD";
+        ctx.fill();
+        ctx.closePath();
+    }
+    function drawPaddle() {
+        ctx.beginPath();
+        ctx.rect(paddleX, canvas_height-paddleHeight, paddleWidth, paddleHeight);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+    }
+    function drawBricks() {
+        var color;
+        for(c=0; c<brickColumnCount; c++) {
+            switch(c){
+                case 0:
+                    color = "gray";
+                break;
+                case 1:
+                    color = "red";
+                break;
+                case 2:
+                    color = "gold";
+                break;
+                case 3:
+                    color = "blue";
+                break;
+                case 4:
+                    color = "magenta";
+                break;
+                case 5:
+                    color = "green";
+                break;
+            }
+            for(r=0; r<brickRowCount; r++) {
+                if(bricks[c][r].status == 1) {
+                    var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
+                    var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
+                    bricks[c][r].x = brickX;
+                    bricks[c][r].y = brickY;
+                    ctx.beginPath();
+                    ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                    ctx.fillStyle = color //"#0095DD";
+                    ctx.fill();
+                    ctx.closePath();
+                }
+            }
+        }
+    }
+    function drawScore() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText("Score: "+score, 8, 20);
+        //ctx.fillText("Score: "+score+"  powercounter: "+power_counter, 8, 20);
+    }
+    function drawLives() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText("Lives: "+lives, canvas_width-65, 20);
+    }
+
+    function draw() {
+        autoBtn.left = canvas.left;
+        ctx.clearRect(0, 0, canvas_width, canvas.height);
+        drawBricks();
+        drawBall();
+        drawPaddle();
+        drawScore();
+        drawLives();
+        collisionDetection();
+        dropItems();
+        
+        if(power)
+            power_counter++;
+        if(power_counter >= 100*(10 - ball_speed)){//power카운터의 초기화 시점.
+            power = false;
+            power_counter = 0;
+        }
+            
+    if(!stay){//playing
+            if(x + dx > canvas_width-ballRadius || x + dx < ballRadius) {
+                dx = -dx;
+            }
+            if(y + dy < ballRadius) {
+                dy = -dy;
+            }
+            else if(y + dy > canvas_height-ballRadius) {
+                /*
+                if(Math.pow(y - paddleY)+Math.pow(x - paddleX) + Math.pow(y - paddleY) <= Math.pow(ballRadius+paddleHeight)){
+                    var angle = Math.atan2(paddleY - y, x - paddleX);
+                    dy *= Math.sin(angle+Math.PI/2);
+                    dx *= Math.cos(angle+Math.PI/2);
+                }else if(Math.pow(y - paddleY) + Math.pow(x - (paddleX+paddleWidth)) <= Math.pow(ballRadius+paddleHeight)){
+                    var angle = Math.atan2(paddleY - y, x - (paddleX + paddleWidth));
+                    dy *= Math.sin(angle-Math.PI/2);
+                    dx *= Math.cos(angle-Math.PI/2);
+                } else
+                */
+                if(x > paddleX && x < paddleX + paddleWidth) {
+                    angle = Math.atan2(y-paddleY, x - (paddleX+paddleWidth)/2);
+                    dy = -ball_speed*Math.sin(angle+Math.PI/2);
+                    //dy = -dy;
+                }
+                else if (y + dy > canvas.height-ballRadius){
+                    lives--;
+                    if(!lives) {
+                        alert("GAME OVER\n\nscore : "+score);
+                        document.location.reload();
+                    }
+                    else {
+                        x = canvas_width/2;
+                        y = canvas_height-30;
+                        dx = ball_speed;
+                        dy = -ball_speed;
+                        paddleX = (canvas_width-paddleWidth)/2;
+                        stay = true;
+                    }
+                }
+            }
+            x += dx;
+            y += dy;
+        if(!auto){
+            if(rightPressed && paddleX < canvas_width-paddleWidth) {
+                paddleX += 7;
+            }else if(leftPressed && paddleX > 0) {
+                paddleX -= 7;
+            }
+        }else{//auto
+            paddleX = x - paddleWidth/2;
+        }
+    }else{
+        x = paddleX + paddleWidth/2;
+        y = stayPosY;
+    }//end of stay
+            requestAnimationFrame(draw);
+    }
+    
+    draw();
+</script>
+
+</body>
+</html>

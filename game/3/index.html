@@ -1,0 +1,260 @@
+<html>
+<head>
+<title>경마 게임</title>
+<style>
+canvas {
+            border: 1px solid black;	/* 캔버스에 경계선을 그려준다. */
+            background-color: #fcff00;	/* 캔버스의 배경색을 지정한다. */
+        }
+table {
+    border-collapse: collapse;
+}
+xecenter_form_box{margin:0 5px;padding:7px;border-radius:4px;background:#fff;border:1px solid #aaa;outline:none;box-shadow:0 0 1px #aaa}
+xecenter_form_box:hover{border:1px solid #5bc0de;background:#ffe}
+xecenter_form_box:focus{border:1px solid #5bc0de;background:#ffe}
+</style>
+</head>
+<body>
+<h3>경마 게임</h3>
+<!--트랙-->
+<canvas id="canvas" width="900" height="300"></canvas>
+<img id="horse1" src="img/horse1.gif">
+<img id="horse2" src="img/horse2.gif">
+<img id="horse3" src="img/horse3.gif">
+
+<!--등수-->
+<table border='1' style='position: absolute; left: 950px; top: 20px;'>
+<tr>
+<th>등수</th><th>말</th><th>배당</th>
+</tr>
+<tr>
+<td>1등</td><td><img id="first" src="img/pokeball.png"></td><td>2배</td>
+</td>
+</tr>
+<tr>
+<td>2등</td><td><img id="second" src="img/pokeball.png"></td><td>1배</td>
+</tr>
+<tr>
+<td>3등</td><td><img id="third" src="img/pokeball.png"></td><td>0배</td>
+</tr>
+</table>
+<!--베팅-->
+<p>
+<p>
+<table border='1' style='position: absolute; top: 400px;'>
+<tr>
+<td colspan="3">
+<span>보유 포인트 : <input type="number" id="hands" class="xecenter_form_box" style="width:100px; background:#eee;" value="300000" disabled="disabled" title = "보유 포인트"/></span>
+&nbsp;오늘 결과 : <input type="number" id = "today_result" class="xecenter_form_box" style="width:100px; background:#eee;" disabled="disabled" value="0"/>
+</td>
+</tr>
+<tr>
+<td colspan="3">
+<span>참가 포인트 : <input type="number" id="user_bet" class="xecenter_form_box" style="width:100px;" value="100000" title="참가 포인트"/></span></td>
+
+</tr>
+</tr>
+<tr>
+<th colspan="3">몇 번에게 베팅하겠습니까?</th>
+
+</tr>
+<tr>
+<td><button id="bet1"><img src="img/horse1.gif"></button></td>
+<td><button id="bet2"><img src="img/horse2.gif"></button></td>
+<td><button id="bet3"><img src="img/horse3.gif"></button></td>
+</tr>
+<script>
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+
+var trigger = false;
+var HORSE_SIZE = 100;
+var START_X = 800;
+var START_Y = 0;
+
+var horses = [];
+horses.push(new Horse(1, HORSE_SIZE, START_X, START_Y));
+horses.push(new Horse(2, HORSE_SIZE, START_X, START_Y+100));
+horses.push(new Horse(3, HORSE_SIZE, START_X, START_Y+200));
+
+//등수
+var rank = 0;
+var ranker_num = [];
+var ranker_table = [
+					document.getElementById('first'),
+					document.getElementById('second'),
+					document.getElementById('third')
+					];
+
+var bet_num = -1;
+
+//버튼의 이벤트 리스너
+var bet1 = document.getElementById('bet1');
+bet1.addEventListener('click', 
+	function(){
+		if(!trigger){//두 번 이상 누르지 못하게 막음.
+			if(!userBetCheck()) return;
+			valueUpdate();
+			init();
+			bet_num = 1;
+			trigger = true;
+		}
+	}
+);
+var bet2 = document.getElementById('bet2');
+bet2.addEventListener('click', 
+	function(){
+		if(!trigger){
+			if(!userBetCheck()) return;
+			valueUpdate();
+			init();
+			bet_num = 2;
+			trigger = true;
+		}
+	}
+);
+var bet3 = document.getElementById('bet3');
+bet3.addEventListener('click', 
+	function(){
+		if(!trigger){
+			if(!userBetCheck()) return;
+			valueUpdate();
+			init();
+			bet_num = 3;
+			trigger = true;
+		}
+	}
+);
+
+//보유 포인트, 참가 포인트, 오늘 결과
+var hands = document.getElementById('hands');
+var user_bet = 0;
+var today_result = document.getElementById('today_result');
+
+
+function userBetCheck(){
+	user_bet = Number(document.getElementById('user_bet').value);
+	if(Number(hands.value) <= 0){
+		alert('포인트가 없습니다!');
+		return false;
+	}
+	if(user_bet <= 0){
+		alert("참가 포인트을 입력해주세요.");
+		return false;
+	}
+	if(user_bet > 100000){
+		alert("100000 포인트 이상 걸지 못합니다.");
+		return false;
+	}
+	return true;
+}
+function valueUpdate(){
+	hands.value = Number(hands.value) - user_bet;
+	today_result.value = Number(today_result.value) - user_bet;
+}
+
+
+function init(){
+	rank = 0;
+	ranker_num = [];
+	horses = [];
+	horses.push(new Horse(1, HORSE_SIZE, START_X, START_Y));
+	horses.push(new Horse(2, HORSE_SIZE, START_X, START_Y+100));
+	horses.push(new Horse(3, HORSE_SIZE, START_X, START_Y+200));
+}
+
+function drawLine(x1, y1, x2, y2){
+	ctx.beginPath();
+	ctx.moveTo(x1,y1);
+	ctx.lineTo(x2,y2);
+	ctx.stroke();
+}
+function drawBackground(){
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	drawLine(100, 0, 100, canvas.height);
+	drawLine(800, 0, 800, 400);
+	drawLine(0, 100, 900, 100);
+	drawLine(0, 200, 900, 200);
+}
+function Horse(num, size, posX, posY){
+	this.num = num;
+	this.id = document.getElementById('horse'+num);
+	this.size = size;
+	this.posX = posX;
+	this.posY = posY;
+	this.goal = false;
+
+	// 문서 객체의 스타일 속성을 변경합니다.
+	this.id.style.position = 'absolute';
+	this.id.style.left = posX + 'px';
+    this.id.style.top = posY + 'px';
+
+	var speedX = 0;
+	var speedY = 0;
+	this.run = function() {
+		if(this.posX < 100 && this.goal == false){
+			ranker_num.push(this.num);
+			ranker_table[rank++].src = "img/horse"+this.num+".gif";
+			this.goal = true;
+		}
+		if (this.posX < 0)
+			return;
+		if (this.posY < 0 || this.posY > canvas.height)
+			this.SpeedY *= -1;
+		speedX = 10 * Math.random(2,5);
+		//speedY = Math.random(0,5);
+
+		this.posX -= speedX;
+		//this.posY += speedY;
+
+		// 위치를 이동합니다.
+        this.id.style.left = this.posX + 'px';
+        this.id.style.top = this.posY + 'px';
+	}
+}
+
+ window.onload = function () {
+	drawBackground();
+	var gain = null;
+	var race = setInterval(function(){
+		if(!trigger)
+			return;
+		horses.forEach(function(element){
+			element.run();
+		});
+		if(endAnimation()){
+			gain = Math.round(Number(result()));
+			hands.value = Number(hands.value) + gain;
+			today_result.value = Number(today_result.value) + gain;
+			if(gain == user_bet){
+				alert("아깝다!");
+			}
+			else if(gain > user_bet){
+				alert(user_bet+"포인트를 획득했다!");
+			}
+			else {
+				alert(user_bet+"포인트를 잃었다!");
+			}
+			trigger = false;
+		}
+	}, 1000/30);
+};
+
+function endAnimation(){
+	return horses.every(function(element){return element.posX <= 0;});
+}
+function result(){
+	switch(bet_num){
+		case ranker_num[0]:
+			return user_bet*2;
+		case ranker_num[1]:
+			return user_bet;
+		case ranker_num[2]:
+			return -user_bet;
+	}
+	return 0;
+}
+</script>
+<!--<script src="javascript/racegame.js">-->
+</body>
+</html>

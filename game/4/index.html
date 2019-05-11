@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.75">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>솔리테어</title>
+  <style>
+	h2 {
+		display: block;
+		font-size: 1.5em;
+		margin-block-start: -3px;
+		margin-block-end: 10px;
+		margin-inline-start: 0px;
+		margin-inline-end: 0px;
+		font-weight: bold;
+	}
+	span {
+		text-align: right;
+	}
+  </style>
+ </head>
+ <body>
+ <h2>솔리테어&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;
+ <input type="button" value="reset" onclick="init();">&nbsp;
+ <span>score : <input type="value" size="3" id="scoreboard" readonly></span>
+ </h2>
+
+ <div></div>
+ </body>
+<script type="text/javascript">
+let gameboard = document.getElementsByTagName("div")[0];
+let scoreboard = document.getElementById("scoreboard");
+const _img = ["./img/0.png","./img/1.png","./img/2.png", "./img/3.png"];
+var arr = [];
+var str = "";
+let pick = {state:false,x:-1,y:-1};
+let mx = -1;
+let my = -1;
+
+init();
+
+function init(){
+		var i = 0;
+		var j = 0;
+        arr = [
+                [3,3,3,1,1,1,3,3,3],[3,3,3,1,1,1,3,3,3],[3,3,3,1,1,1,3,3,3],
+                [1,1,1,1,1,1,1,1,1],[1,1,1,1,0,1,1,1,1],[1,1,1,1,1,1,1,1,1],
+                [3,3,3,1,1,1,3,3,3],[3,3,3,1,1,1,3,3,3],[3,3,3,1,1,1,3,3,3]
+                ];
+        str = "";
+        pick.state = false;
+        pick.x = -1;
+        pick.y = -1;
+		mx = -1;
+		my = -1;
+		scoreboard.value = 0;
+        
+        str += '<table border="1">';
+        for(i=0;i<9;i++){
+                        str += '<tr>' ;
+                for(j=0;j<9;j++){
+                        str += '<td><img name="b'+i+'" src="'+_img[arr[i][j]]+'" onclick="btnClick('+i+','+j+');"></td>' ;
+                }
+                str += '</tr>';
+                
+        }
+        str += '</table>';
+        gameboard.innerHTML = str;
+}
+        
+
+function btnClick(x, y){
+	let p = false;
+        if(pick.state){
+               switch(arr[x][y]){
+                        case 0:
+                               if((Math.abs(pick.x-x) == 2)^(Math.abs(pick.y-y) == 2)){
+										   mx = (pick.x+x)/2;
+										   my = (pick.y+y)/2;
+                                        if(arr[mx][my] == 1){
+                                                replace(mx, my, 0);
+                                                replace(x, y, 1);
+                                                replace(pick.x, pick.y, 0);
+												mx = -1;
+												my = -1;
+                                                pickInit();
+												scoreboard.value++;
+												if(gameOver()){
+													setTimeout(function() {
+														alert("gameover\nscore : "+scoreboard.value);
+													}, 100);
+												}
+                                        }else{
+                                                return;
+                                        }
+                               }        
+                        break;
+                        case 1:
+								replace(pick.x, pick.y, 1);
+								pick.x = x;
+								pick.y = y;
+								replace(x, y, 2);
+                        break;
+                        case 2:
+                               replace(x, y, 1);
+                               pickInit();
+                        break;
+                       default:
+								replace(pick.x, pick.y, 1);
+								pickInit();
+                        break;
+                } 
+        } else {
+                if(arr[x][y]==1&&(arrayIndexCheck(x+2,y)||arrayIndexCheck(x-2,y)||arrayIndexCheck(x,y+2)||arrayIndexCheck(x,y-2))){
+                                pick.x = x;
+                                pick.y = y;
+                                pick.state = true;
+                                replace(pick.x, pick.y, 2);
+                }
+        }
+
+}
+        
+function replace(x, y, t){
+        arr[x][y] = t;
+        document.getElementsByName("b"+x.toString())[y].src = _img[t];
+}
+function pickInit(){
+        pick.x = -1;
+        pick.y = -1;
+        pick.state = false;
+}
+function arrayIndexCheck(x , y){
+	if(x<0||8<x||y<0||8<y)
+		return false;
+	else if (arr[x][y] != 0)
+		return false;
+	else
+		return true;
+	
+}
+function gameOver(){
+	var i = 0;
+	var j = 0;
+	for(i=0;i<9;i++){
+		for(j=0;j<7;j++){
+			if((i<3||i>5)&&j<3)
+				break;
+			if(arr[i][j] == 1 && arr[i][j+1] == 1 && arr[i][j+2] == 0)
+				return false;
+			if(arr[i][j] == 0 && arr[i][j+1] == 1 && arr[i][j+2] == 1)
+				return false;
+		}
+	}
+	for(j=0;j<9;j++){
+		for(i=0;i<7;i++){
+			if(i<3&&(j<3||j>5))
+				break;
+			if(arr[i][j] == 1 && arr[i+1][j] == 1 && arr[i+2][j] == 0)
+				return false;
+			if(arr[i][j] == 0 && arr[i+1][j] == 1 && arr[i+2][j] == 1)
+				return false;
+		}
+	}
+	return true;
+}
+
+</script>
+
+</html>

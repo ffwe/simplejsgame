@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>간단한 javascript 게임 모음</title>
+
+<style>
+iframe{
+all:unset;
+}
+#game{
+        position:absolute;
+        top:30px;
+        left:0px;
+        width:1200px;
+        height:730px;
+}
+#readme{
+        position:absolute;
+        top:30px;
+        right:10px;
+        width:370px;
+        height:730px;
+}
+</style>
+
+</head>
+<body>
+<label for="game-select">게임 선택:</label>
+<select id="game-select">
+        <option value="0">0. --------  선택  --------</option>
+        <option value="1">1.베스킨라빈스 31 게임</option>
+        <option value="2">2.벽돌깨기(알카노이드)</option>
+        <option value="3">3.경마게임</option>
+        <option value="4">4.솔리테어</option>
+        
+        <!--<option value="">.</option>-->
+</select><br/>
+<iframe id="game" src="game/0/index.html"></iframe>
+<iframe id="readme" src="game/0/readme.html"></iframe><br/>
+
+</body>
+<script>
+let gselect = document.getElementById('game-select');
+const game = document.getElementById('game');
+const readme = document.getElementById('readme');
+
+window.onload = function(){
+        gselect.onchange = function (){
+                game.src = `./game/${gselect.value}/index.html`;
+				readme.src = `./game/${gselect.value}/readme.html`;
+        };
+}
+
+
+</script>
+        
+        
+</html>
