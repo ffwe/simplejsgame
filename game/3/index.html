@@ -1,10 +1,11 @@
 <html>
 <head>
-<title>°æ¸¶ °ÔÀÓ</title>
+<meta charset="utf-8" />
+<title>ê²½ë§ˆ ê²Œì„</title>
 <style>
 canvas {
-            border: 1px solid black;	/* Äµ¹ö½º¿¡ °æ°è¼±À» ±×·ÁÁØ´Ù. */
-            background-color: #fcff00;	/* Äµ¹ö½ºÀÇ ¹è°æ»öÀ» ÁöÁ¤ÇÑ´Ù. */
+            border: 1px solid black;	/* ìº”ë²„ìŠ¤ì— ê²½ê³„ì„ ì„ ê·¸ë ¤ì¤€ë‹¤. */
+            background-color: #fcff00;	/* ìº”ë²„ìŠ¤ì˜ ë°°ê²½ìƒ‰ì„ ì§€ì •í•œë‹¤. */
         }
 table {
     border-collapse: collapse;
@@ -15,47 +16,47 @@ xecenter_form_box:focus{border:1px solid #5bc0de;background:#ffe}
 </style>
 </head>
 <body>
-<h3>°æ¸¶ °ÔÀÓ</h3>
-<!--Æ®·¢-->
+<h3>ê²½ë§ˆ ê²Œì„</h3>
+<!--íŠ¸ë™-->
 <canvas id="canvas" width="900" height="300"></canvas>
 <img id="horse1" src="img/horse1.gif">
 <img id="horse2" src="img/horse2.gif">
 <img id="horse3" src="img/horse3.gif">
 
-<!--µî¼ö-->
+<!--ë“±ìˆ˜-->
 <table border='1' style='position: absolute; left: 950px; top: 20px;'>
 <tr>
-<th>µî¼ö</th><th>¸»</th><th>¹è´ç</th>
+<th>ë“±ìˆ˜</th><th>ë§</th><th>ë°°ë‹¹</th>
 </tr>
 <tr>
-<td>1µî</td><td><img id="first" src="img/pokeball.png"></td><td>2¹è</td>
+<td>1ë“±</td><td><img id="first" src="img/pokeball.png"></td><td>2ë°°</td>
 </td>
 </tr>
 <tr>
-<td>2µî</td><td><img id="second" src="img/pokeball.png"></td><td>1¹è</td>
+<td>2ë“±</td><td><img id="second" src="img/pokeball.png"></td><td>1ë°°</td>
 </tr>
 <tr>
-<td>3µî</td><td><img id="third" src="img/pokeball.png"></td><td>0¹è</td>
+<td>3ë“±</td><td><img id="third" src="img/pokeball.png"></td><td>0ë°°</td>
 </tr>
 </table>
-<!--º£ÆÃ-->
+<!--ë² íŒ…-->
 <p>
 <p>
 <table border='1' style='position: absolute; top: 400px;'>
 <tr>
 <td colspan="3">
-<span>º¸À¯ Æ÷ÀÎÆ® : <input type="number" id="hands" class="xecenter_form_box" style="width:100px; background:#eee;" value="300000" disabled="disabled" title = "º¸À¯ Æ÷ÀÎÆ®"/></span>
-&nbsp;¿À´Ã °á°ú : <input type="number" id = "today_result" class="xecenter_form_box" style="width:100px; background:#eee;" disabled="disabled" value="0"/>
+<span>ë³´ìœ  í¬ì¸íŠ¸ : <input type="number" id="hands" class="xecenter_form_box" style="width:100px; background:#eee;" value="300000" disabled="disabled" title = "ë³´ìœ  í¬ì¸íŠ¸"/></span>
+&nbsp;ì˜¤ëŠ˜ ê²°ê³¼ : <input type="number" id = "today_result" class="xecenter_form_box" style="width:100px; background:#eee;" disabled="disabled" value="0"/>
 </td>
 </tr>
 <tr>
 <td colspan="3">
-<span>Âü°¡ Æ÷ÀÎÆ® : <input type="number" id="user_bet" class="xecenter_form_box" style="width:100px;" value="100000" title="Âü°¡ Æ÷ÀÎÆ®"/></span></td>
+<span>ì°¸ê°€ í¬ì¸íŠ¸ : <input type="number" id="user_bet" class="xecenter_form_box" style="width:100px;" value="100000" title="ì°¸ê°€ í¬ì¸íŠ¸"/></span></td>
 
 </tr>
 </tr>
 <tr>
-<th colspan="3">¸î ¹ø¿¡°Ô º£ÆÃÇÏ°Ú½À´Ï±î?</th>
+<th colspan="3">ëª‡ ë²ˆì—ê²Œ ë² íŒ…í•˜ê² ìŠµë‹ˆê¹Œ?</th>
 
 </tr>
 <tr>
@@ -77,7 +78,7 @@ horses.push(new Horse(1, HORSE_SIZE, START_X, START_Y));
 horses.push(new Horse(2, HORSE_SIZE, START_X, START_Y+100));
 horses.push(new Horse(3, HORSE_SIZE, START_X, START_Y+200));
 
-//µî¼ö
+//ë“±ìˆ˜
 var rank = 0;
 var ranker_num = [];
 var ranker_table = [
@@ -88,11 +89,11 @@ var ranker_table = [
 
 var bet_num = -1;
 
-//¹öÆ°ÀÇ ÀÌº¥Æ® ¸®½º³Ê
+//ë²„íŠ¼ì˜ ì´ë²¤íŠ¸ ë¦¬ìŠ¤ë„ˆ
 var bet1 = document.getElementById('bet1');
 bet1.addEventListener('click', 
 	function(){
-		if(!trigger){//µÎ ¹ø ÀÌ»ó ´©¸£Áö ¸øÇÏ°Ô ¸·À½.
+		if(!trigger){//ë‘ ë²ˆ ì´ìƒ ëˆ„ë¥´ì§€ ëª»í•˜ê²Œ ë§‰ìŒ.
 			if(!userBetCheck()) return;
 			valueUpdate();
 			init();
@@ -126,7 +127,7 @@ bet3.addEventListener('click',
 	}
 );
 
-//º¸À¯ Æ÷ÀÎÆ®, Âü°¡ Æ÷ÀÎÆ®, ¿À´Ã °á°ú
+//ë³´ìœ  í¬ì¸íŠ¸, ì°¸ê°€ í¬ì¸íŠ¸, ì˜¤ëŠ˜ ê²°ê³¼
 var hands = document.getElementById('hands');
 var user_bet = 0;
 var today_result = document.getElementById('today_result');
@@ -135,15 +136,15 @@ var today_result = document.getElementById('today_result');
 function userBetCheck(){
 	user_bet = Number(document.getElementById('user_bet').value);
 	if(Number(hands.value) <= 0){
-		alert('Æ÷ÀÎÆ®°¡ ¾ø½À´Ï´Ù!');
+		alert('í¬ì¸íŠ¸ê°€ ì—†ìŠµë‹ˆë‹¤!');
 		return false;
 	}
 	if(user_bet <= 0){
-		alert("Âü°¡ Æ÷ÀÎÆ®À» ÀÔ·ÂÇØÁÖ¼¼¿ä.");
+		alert("ì°¸ê°€ í¬ì¸íŠ¸ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.");
 		return false;
 	}
 	if(user_bet > 100000){
-		alert("100000 Æ÷ÀÎÆ® ÀÌ»ó °ÉÁö ¸øÇÕ´Ï´Ù.");
+		alert("100000 í¬ì¸íŠ¸ ì´ìƒ ê±¸ì§€ ëª»í•©ë‹ˆë‹¤.");
 		return false;
 	}
 	return true;
@@ -184,7 +185,7 @@ function Horse(num, size, posX, posY){
 	this.posY = posY;
 	this.goal = false;
 
-	// ¹®¼­ °´Ã¼ÀÇ ½ºÅ¸ÀÏ ¼Ó¼ºÀ» º¯°æÇÕ´Ï´Ù.
+	// ë¬¸ì„œ ê°ì²´ì˜ ìŠ¤íƒ€ì¼ ì†ì„±ì„ ë³€ê²½í•©ë‹ˆë‹¤.
 	this.id.style.position = 'absolute';
 	this.id.style.left = posX + 'px';
     this.id.style.top = posY + 'px';
@@ -207,7 +208,7 @@ function Horse(num, size, posX, posY){
 		this.posX -= speedX;
 		//this.posY += speedY;
 
-		// À§Ä¡¸¦ ÀÌµ¿ÇÕ´Ï´Ù.
+		// ìœ„ì¹˜ë¥¼ ì´ë™í•©ë‹ˆë‹¤.
         this.id.style.left = this.posX + 'px';
         this.id.style.top = this.posY + 'px';
 	}
@@ -227,13 +228,13 @@ function Horse(num, size, posX, posY){
 			hands.value = Number(hands.value) + gain;
 			today_result.value = Number(today_result.value) + gain;
 			if(gain == user_bet){
-				alert("¾Æ±õ´Ù!");
+				alert("ì•„ê¹ë‹¤!");
 			}
 			else if(gain > user_bet){
-				alert(user_bet+"Æ÷ÀÎÆ®¸¦ È¹µæÇß´Ù!");
+				alert(user_bet+"í¬ì¸íŠ¸ë¥¼ íšë“í–ˆë‹¤!");
 			}
 			else {
-				alert(user_bet+"Æ÷ÀÎÆ®¸¦ ÀÒ¾ú´Ù!");
+				alert(user_bet+"í¬ì¸íŠ¸ë¥¼ ìƒì—ˆë‹¤!");
 			}
 			trigger = false;
 		}

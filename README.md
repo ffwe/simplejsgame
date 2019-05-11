@@ -1,2 +1,2 @@
-# simplejsgame.github.io
+# simplejsgame
 simple javscript game collection

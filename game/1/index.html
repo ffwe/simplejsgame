@@ -1,6 +1,9 @@
 <html>
 <head>
-<title>º£½ºÅ²¶óºó½º 31 °ÔÀÓ</title>
+<head>
+    <meta charset="utf-8" />
+    <title>ë² ìŠ¤í‚¨ë¼ë¹ˆìŠ¤ 31 ê²Œì„</title>
+</head>
 <style>
 .game{
 	position:relative;
@@ -20,10 +23,10 @@ div.dialog{
 </style>
 </head>
 <body>
-<h2>º£½ºÅ²¶óºó½º 31 °ÔÀÓ</h2>
+<h2>ë² ìŠ¤í‚¨ë¼ë¹ˆìŠ¤ 31 ê²Œì„</h2>
 <p>
 <img src='img/img_br_sns.png' style='width:130px; height:130px; position:absolute; top:60px; left:50px;'>
-<!--°ÔÀÓ È­¸é-->
+<!--ê²Œì„ í™”ë©´-->
 <h3 class='game'><img src='img/ice_cream.png' style='width:50px; height:50px; position:relative; top:15px;'> : <span id='pot'>0</span></h3>
 <p>
 <h4><div id='dialog' class='dialog'></div></h4>
@@ -34,22 +37,22 @@ div.dialog{
 <span name='val'></span><input type='radio' name='num' value='2' disabled='true'>
 <span name='val'></span><input type='radio' name='num' value='3' disabled='true'>
 <p>
-<input type='button' id='btn' value='½ÃÀÛ'>
+<input type='button' id='btn' value='ì‹œì‘'>
 <p>
 </div>
 
 <div style='position:relative; top:35px;'>
-ÇÊ¼ö ¼³Á¤ :<br>
-´ç½ÅÀÇ<br>
-¼±°ø<input type='radio' name='ad'>ÈÄ°ø<input type='radio' name='ad'>
+í•„ìˆ˜ ì„¤ì • :<br>
+ë‹¹ì‹ ì˜<br>
+ì„ ê³µ<input type='radio' name='ad'>í›„ê³µ<input type='radio' name='ad'>
 <p>
-ÄÄÇ»ÅÍ AI<br>
-·£´ı<input type='radio' name='ai'>ÃÖ¼±ÀÇ ¼±ÅÃ<input type='radio' name='ai'>
+ì»´í“¨í„° AI<br>
+ëœë¤<input type='radio' name='ai'>ìµœì„ ì˜ ì„ íƒ<input type='radio' name='ai'>
 <p>
-±ÔÄ¢ :<br>
-ÀÚ±â Â÷·Ê°¡ µÇ¸é ¼ıÀÚ¸¦ +1~3±îÁö ¸»ÇÏ°í »ó´ë¿¡°Ô Â÷·Ê¸¦ ³Ñ±ä´Ù.<br>
-±×·¸°Ô ÁøÇàÇÏ´Ù°¡ ¸¶Áö¸·¿¡ ¼ıÀÚ 31À» ¸»ÇØ¾ß ÇÏ´Â »ç¶÷Àº Áø´Ù...<br>
-Âü ½±ÁÒ?<br>
+ê·œì¹™ :<br>
+ìê¸° ì°¨ë¡€ê°€ ë˜ë©´ ìˆ«ìë¥¼ +1~3ê¹Œì§€ ë§í•˜ê³  ìƒëŒ€ì—ê²Œ ì°¨ë¡€ë¥¼ ë„˜ê¸´ë‹¤.<br>
+ê·¸ë ‡ê²Œ ì§„í–‰í•˜ë‹¤ê°€ ë§ˆì§€ë§‰ì— ìˆ«ì 31ì„ ë§í•´ì•¼ í•˜ëŠ” ì‚¬ëŒì€ ì§„ë‹¤...<br>
+ì°¸ ì‰½ì£ ?<br>
 </div>
 
 <script>
@@ -70,17 +73,17 @@ var dialog = document.getElementById('dialog');
 function init(){
 	btn.removeEventListener("click", userSelect);
 	btn.addEventListener("click", start);
-	btn.value = "½ÃÀÛ";
+	btn.value = "ì‹œì‘";
 	ad[0].disabled = false;
 	ad[1].disabled = false;
 }
 function start (){
 	if(!ad[0].checked && !ad[1].checked){
-		alert("¼±°ø ÈÄ°øÀ» °áÁ¤ÇØÁÖ¼¼¿ä.");
+		alert("ì„ ê³µ í›„ê³µì„ ê²°ì •í•´ì£¼ì„¸ìš”.");
 		return false;
 	}
 	if(!ai[0].checked && !ai[1].checked){
-		alert("AIÀÇ ¼öÁØÀ» °áÁ¤ÇØÁÖ¼¼¿ä.");
+		alert("AIì˜ ìˆ˜ì¤€ì„ ê²°ì •í•´ì£¼ì„¸ìš”.");
 		return false;
 	}
 	dialog.innerHTML = "";
@@ -102,18 +105,18 @@ function start (){
 	potNum = 0;
 	btn.removeEventListener("click", start);
 	if(ad[0].checked)
-		dialog.innerHTML += "´ç½ÅÀÇ Â÷·ÊÀÔ´Ï´Ù.<br>";
+		dialog.innerHTML += "ë‹¹ì‹ ì˜ ì°¨ë¡€ì…ë‹ˆë‹¤.<br>";
 	else if(ad[1].checked)
 		comSelect();
 	
 	btn.addEventListener("click", userSelect);
-	btn.value = "Á¦Ãâ";
+	btn.value = "ì œì¶œ";
 
 	return true;
 }
 function userSelect (){
 	if(!num[0].checked&&!num[1].checked&&!num[2].checked){
-		alert("1,2,3 Áß ¼ıÀÚ ÇÏ³ª¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä.");
+		alert("1,2,3 ì¤‘ ìˆ«ì í•˜ë‚˜ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”.");
 		return false;
 	}
 	num.forEach(
@@ -121,14 +124,14 @@ function userSelect (){
 			if(element.checked){
 				potNum += index+1;
 				pot.innerHTML = potNum;
-				dialog.innerHTML += "´ç½ÅÀº +"+element.value+"À»(¸¦) Çß½À´Ï´Ù.<br>";
+				dialog.innerHTML += "ë‹¹ì‹ ì€ +"+element.value+"ì„(ë¥¼) í–ˆìŠµë‹ˆë‹¤.<br>";
 			}
 		}
 	);
 	if (potNum < 31)
 		comSelect();
 	else{
-		dialog.innerHTML += "´ç½ÅÀÇ ÆĞ¹è!<br>";
+		dialog.innerHTML += "ë‹¹ì‹ ì˜ íŒ¨ë°°!<br>";
 		init();
 	}
 	autoScroll();
@@ -136,7 +139,7 @@ function userSelect (){
 }
 function comSelect (){
 	btn.disabled = true;
-	dialog.innerHTML += "ÄÄÇ»ÅÍÀÇ Â÷·ÊÀÔ´Ï´Ù.<br>";
+	dialog.innerHTML += "ì»´í“¨í„°ì˜ ì°¨ë¡€ì…ë‹ˆë‹¤.<br>";
 	var com_num = 2;
 
 	if (ai[0].checked)
@@ -147,11 +150,11 @@ function comSelect (){
 	potNum += com_num;
 	pot.innerHTML = potNum;
 
-	dialog.innerHTML += "ÄÄÇ»ÅÍ´Â +"+com_num+"À»(¸¦) Çß½À´Ï´Ù.<br>";
+	dialog.innerHTML += "ì»´í“¨í„°ëŠ” +"+com_num+"ì„(ë¥¼) í–ˆìŠµë‹ˆë‹¤.<br>";
 	if (potNum < 31)
-		dialog.innerHTML += "´ç½ÅÀÇ Â÷·ÊÀÔ´Ï´Ù.<br>";
+		dialog.innerHTML += "ë‹¹ì‹ ì˜ ì°¨ë¡€ì…ë‹ˆë‹¤.<br>";
 	else{
-		dialog.innerHTML += "´ç½ÅÀÇ ½Â¸®!<br>";
+		dialog.innerHTML += "ë‹¹ì‹ ì˜ ìŠ¹ë¦¬!<br>";
 		init();
 	} 
 	autoScroll();
