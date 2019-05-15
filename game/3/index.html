@@ -225,12 +225,13 @@ function Horse(num, size, posX, posY){
 		});
 		if(endAnimation()){
 			gain = Math.round(Number(result()));
-			hands.value = Number(hands.value) + gain;
 			today_result.value = Number(today_result.value) + gain;
 			if(gain == user_bet){
+				hands.value = Number(hands.value) + gain;
 				alert("아깝다!");
 			}
 			else if(gain > user_bet){
+				hands.value = Number(hands.value) + gain;
 				alert(user_bet+"포인트를 획득했다!");
 			}
 			else {
