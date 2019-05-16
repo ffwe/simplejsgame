@@ -224,8 +224,9 @@ function Horse(num, size, posX, posY){
 			element.run();
 		});
 		if(endAnimation()){
+			gain = Math.round(Number(result()));
+
 			if(gain >= user_bet){
-				gain = Math.round(Number(result()));
 				today_result.value = Number(today_result.value) + gain;
 				hands.value = Number(hands.value) + gain;
 			}
