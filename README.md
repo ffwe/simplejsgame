@@ -1,4 +1,4 @@
 # simplejsgame
 simple javscript game collection
 
-https://wjdskagjs1.github.io/simplejsgame/
+https://fact-0.github.io/simplejsgame/
